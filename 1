@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命定台漫料理測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 font-sans text-gray-800 relative overflow-hidden"
+      style="background-color: #fffbeb; background-image: radial-gradient(#fcd34d 2.5px, transparent 2.5px); background-size: 24px 24px;">
+
+    <!-- 遊戲主要容器 -->
+    <div id="app" class="w-full max-w-3xl flex justify-center"></div>
+
+    <script>
+        // --- 資料庫 ---
+        const dishesData = {
+            oolong: {
+                name: "烏龍茶", comic: "《異人茶跡》", author: "張季雅",
+                tags: ["回甘", "歷史", "大稻埕", "茶香"],
+                description: "你的命定之味是見證台灣商業開拓史的「烏龍茶」。這口茶充滿了清末大稻埕的熱血與開拓精神，清香回甘，就像你堅毅且重視深度的個性！",
+                coverColor: "bg-amber-700", icon: "🍵"
+            },
+            tea_egg: {
+                name: "茶葉蛋", comic: "《幸福調味料》", author: "阮光民",
+                tags: ["懷舊", "人情味", "暖心", "日常"],
+                description: "你的命定之味是柑仔店裡慢火熬煮的「茶葉蛋」。裂痕越多越入味，就像生活中累積的酸甜苦辣，看似平凡卻充滿著街坊巷弄間最醇厚的人情味。",
+                coverColor: "bg-yellow-700", icon: "🥚"
+            },
+            basil_pancake: {
+                name: "九層塔蛋餅", comic: "《幸福調味料》", author: "阮光民",
+                tags: ["草根", "台味", "活力", "早點"],
+                description: "你的命定之味是香氣四溢的「九層塔蛋餅」。九層塔濃郁的香氣與蛋香交織，是台灣最經典的庶民早點，象徵你直率、接地氣且熱愛生活的活力！",
+                coverColor: "bg-yellow-500", icon: "🥞"
+            },
+            meatball: {
+                name: "貢丸", comic: "《台灣特有種》", author: "茜Cian",
+                tags: ["Q彈", "奇幻", "可愛", "創意"],
+                description: "你的命定之味是Q彈多汁的「貢丸」。在充滿想像力的漫畫世界裡，牠可是會動的可愛小寵物！這代表你內心充滿童趣，喜歡充滿創意與驚喜的事物。",
+                coverColor: "bg-orange-400", icon: "🍢"
+            },
+            shuirunbing: {
+                name: "水潤餅", comic: "《台灣特有種》", author: "茜Cian",
+                tags: ["新竹限定", "奇幻", "純粹", "古早味"],
+                description: "你的命定之味是帶有淡淡肉桂與麵香的「水潤餅」。這款新竹特有的傳統點心，在漫畫中化身奇幻生物，象徵你喜歡單純、樸實卻帶有一點與眾不同的獨特魅力。",
+                coverColor: "bg-amber-500", icon: "🫓"
+            },
+            fried_noodles: {
+                name: "炒米粉", comic: "《手路菜》", author: "安妮羊 / 編劇：鄭心媚",
+                tags: ["尋根", "家鄉味", "鑊氣", "溫馨"],
+                description: "你的命定之味是鑊氣十足的「炒米粉」。看似家常，卻考驗著廚師的火候與手路。它代表著你對家鄉味的眷戀，以及容易被溫馨回憶感動的柔軟內心。",
+                coverColor: "bg-orange-600", icon: "🍜"
+            },
+            melon_pork: {
+                name: "瓜仔肉", comic: "《手路菜》", author: "安妮羊 / 編劇：鄭心媚",
+                tags: ["下飯", "私房菜", "療癒", "親情"],
+                description: "你的命定之味是鹹甜交織的「瓜仔肉」。這是一道能讓人多扒好幾口飯的靈魂料理！充滿了長輩的關愛與家的溫度，最適合用來療癒你疲憊的心靈。",
+                coverColor: "bg-amber-800", icon: "🍲"
+            },
+            aiyu_ice: {
+                name: "愛玉冰", comic: "《友繪的小梅屋記事簿》", author: "清水",
+                tags: ["大正浪漫", "清涼", "青春", "酸甜"],
+                description: "你的命定之味是酸甜沁涼的「愛玉冰」。在1920年代的台北城，這碗晶瑩剔透的甜品見證了女高校生的青春與熱情，代表你追求精緻且嚮往大正浪漫的品味。",
+                coverColor: "bg-lime-600", icon: "🍧"
+            },
+            crab_pill: {
+                name: "蟳丸", comic: "《友繪的小梅屋記事簿》", author: "清水",
+                tags: ["宴席料理", "講究", "歷史", "手路菜"],
+                description: "你的命定之味是作工繁複的傳統台南宴席菜「蟳丸」。這展現了你對美食的高度要求與講究，喜歡探索歷史文化中那些華麗且具有底蘊的精緻事物。",
+                coverColor: "bg-rose-500", icon: "🦀"
+            },
+            mille_crepe: {
+                name: "千層蛋糕", comic: "《鯨舟堂休業中》", author: "張季雅",
+                tags: ["慢活", "台南", "甜點", "細膩"],
+                description: "你的命定之味是層次細膩的「千層蛋糕」。結合古都的慢活步調與精湛的法式甜點工藝，代表你心思細膩，喜歡在安靜的時光中尋找自我與心靈的平靜。",
+                coverColor: "bg-teal-600", icon: "🍰"
+            }
+        };
+
+        const questions = [
+            {
+                title: "1. 今天的天氣與你的身體狀態，你最想來點什麼？",
+                options: [
+                    { text: "有點疲憊，想吃熱騰騰、能飽足暖胃的家常菜", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "微餓嘴饞，想吃點帶有獨特香氣或Q彈嚼勁的小吃", dishes: ["meatball", "basil_pancake", "shuirunbing"] },
+                    { text: "需要提神或解渴，想來點清涼或回甘的飲品甜湯", dishes: ["oolong", "aiyu_ice"] },
+                    { text: "想要悠閒坐下來，品嚐作工細緻的下午茶或點心", dishes: ["mille_crepe", "crab_pill", "tea_egg"] }
+                ]
+            },
+            {
+                title: "2. 如果這道料理背後有一個故事，你最喜歡哪一種劇情？",
+                options: [
+                    { text: "將台灣在地特色推向國際舞台的熱血商業史", dishes: ["oolong"] },
+                    { text: "在街角老店裡，看盡聚散離合的平凡人情味", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "開著餐車環島，尋找失傳記憶的溫馨尋根之旅", dishes: ["fried_noodles", "melon_pork"] },
+                    { text: "充滿大正浪漫，邁向頂級料亭女將的青春修業", dishes: ["aiyu_ice", "crab_pill"] },
+                    { text: "在古都老屋中，藉由歷史文物與甜點重新出發", dishes: ["mille_crepe"] },
+                    { text: "熟悉的日常小吃，變成可以飼養的奇幻小動物", dishes: ["meatball", "shuirunbing"] }
+                ]
+            },
+            {
+                title: "3. 你最看重食物的哪一種「口感與風味」？",
+                options: [
+                    { text: "茶葉烘焙的深邃，或是回甘解膩的清香", dishes: ["oolong", "tea_egg"] },
+                    { text: "九層塔、爆香油蔥等強烈迷人的在地台味", dishes: ["basil_pancake", "fried_noodles"] },
+                    { text: "入口即化的軟嫩，以及溫潤鹹甜的滷汁肉香", dishes: ["melon_pork", "meatball"] },
+                    { text: "一層層堆疊的細膩口感，與微甜的精緻滋味", dishes: ["mille_crepe", "crab_pill"] },
+                    { text: "Q彈有嚼勁，單純卻讓人上癮的特殊風味", dishes: ["shuirunbing", "aiyu_ice"] }
+                ]
+            },
+            {
+                title: "4. 你最喜歡的用餐場景與氛圍是？",
+                options: [
+                    { text: "精緻講究，展現主人品味的日式老屋或高級料亭", dishes: ["crab_pill", "aiyu_ice"] },
+                    { text: "穿梭在百年洋行，見證大稻埕繁華的商辦茶室", dishes: ["oolong"] },
+                    { text: "充滿時代感與文青氣息，步調緩慢的台南巷弄", dishes: ["mille_crepe"] },
+                    { text: "充滿在地活力，大家邊吃邊聊的廟口或早餐店", dishes: ["basil_pancake", "fried_noodles", "tea_egg"] },
+                    { text: "在家裡的餐桌上，吃著長輩親手做出的家常菜", dishes: ["melon_pork"] },
+                    { text: "充滿想像力的世界，身邊圍繞著超可愛的美食幻獸", dishes: ["meatball", "shuirunbing"] }
+                ]
+            },
+            {
+                title: "5. 當你遇到挫折，你覺得這道料理能怎麼治癒你？",
+                options: [
+                    { text: "就像這道料理，提醒我要有層次地慢慢拆解問題", dishes: ["mille_crepe", "crab_pill"] },
+                    { text: "讓我回想起家人的溫暖，充飽電後再次出發", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "在熟悉的香氣中找到安全感，發現平凡日常的美好", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "用最純粹的回甘滋味，洗滌我煩躁不安的心靈", dishes: ["oolong", "aiyu_ice"] },
+                    { text: "如果食物能變成小寵物讓我揉捏抱抱，心情就好了", dishes: ["meatball", "shuirunbing"] }
+                ]
+            },
+            {
+                title: "6. 如果這道料理擬人化，你覺得他會是個怎樣的人？",
+                options: [
+                    { text: "穿著西裝、具有國際視野與商業頭腦的行動派", dishes: ["oolong"] },
+                    { text: "穿著和服，氣質出眾且充滿青春活力的女高校生", dishes: ["aiyu_ice", "crab_pill"] },
+                    { text: "溫柔細膩，總是安靜傾聽你心事的文藝青年", dishes: ["mille_crepe"] },
+                    { text: "廚藝精湛，背後有許多故事的街坊總鋪師", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "親切和藹，總是笑眯眯看著你長大的長輩", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "滿腦子奇思妙想，隨時能變出驚喜的元氣少年/少女", dishes: ["meatball", "shuirunbing"] }
+                ]
+            }
+        ];
+
+        // --- 狀態與圖示設定 ---
+        let gameState = 'start'; // 'start', 'quiz', 'result'
+        let currentQuestion = 0;
+        let scores = {};
+        let finalDish = null;
+
+        const icons = {
+            utensils: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>`,
+            coffee: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg>`,
+            chevronRight: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
+            rotateCcw: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+            sparkles: (classes) => `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${classes}"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>`
+        };
+
+        function resetScores() {
+            scores = { oolong: 0, tea_egg: 0, basil_pancake: 0, meatball: 0, shuirunbing: 0, fried_noodles: 0, melon_pork: 0, aiyu_ice: 0, crab_pill: 0, mille_crepe: 0 };
+        }
+
+        // --- 事件處理 ---
+        window.startGame = function() {
+            gameState = 'quiz';
+            render();
+        }
+
+        window.handleOption = function(qIndex, optIndex) {
+            const dishesArray = questions[qIndex].options[optIndex].dishes;
+            dishesArray.forEach(dishId => {
+                scores[dishId] += 1;
+            });
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion += 1;
+            } else {
+                // 計算結果
+                let maxDish = Object.keys(scores)[0];
+                let maxScore = -1;
+                
+                for (const [dish, score] of Object.entries(scores)) {
+                    if (score > maxScore) {
+                        maxScore = score;
+                        maxDish = dish;
+                    }
+                }
+                finalDish = maxDish;
+                gameState = 'result';
+            }
+            render();
+        }
+
+        window.resetGame = function() {
+            resetScores();
+            currentQuestion = 0;
+            finalDish = null;
+            gameState = 'start';
+            render();
+        }
+
+        // --- 渲染畫面邏輯 ---
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // 清空
+
+            if (gameState === 'start') {
+                app.innerHTML = `
+                    <div class="max-w-2xl w-full bg-white p-10 rounded-2xl text-center border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transform transition-all hover:-translate-y-1 relative mt-4">
+                        <div class="absolute -top-5 -left-4 bg-yellow-400 text-black font-black py-1 px-5 border-4 border-black transform -rotate-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-lg tracking-widest">
+                            COMIC QUIZ!
+                        </div>
+                        <div class="flex justify-center gap-4 mb-6 text-orange-500">
+                            ${icons.utensils}
+                            ${icons.coffee}
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black mb-4 text-gray-900 tracking-tight">
+                            命定台漫料理測驗
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed font-bold">
+                            從烏龍茶、九層塔蛋餅到台南蟳丸...<br/>
+                            台灣漫畫裡藏著無數令人垂涎的在地美味！<br/>
+                            透過 6 個情境問題，測出你的靈魂口味，<br/>
+                            找出專屬於你的「命定料理」與它的漫畫出處吧！
+                        </p>
+                        <button onclick="startGame()" class="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-xl font-black py-4 px-10 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+                            開始測驗 ${icons.chevronRight}
+                        </button>
+                    </div>
+                `;
+            } else if (gameState === 'quiz') {
+                const q = questions[currentQuestion];
+                const progressWidth = ((currentQuestion + 1) / questions.length) * 100;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, i) => {
+                    const charLetter = String.fromCharCode(65 + i);
+                    optionsHtml += `
+                        <button onclick="handleOption(${currentQuestion}, ${i})" class="text-left w-full bg-white p-5 md:p-6 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:bg-orange-50 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center gap-4 group">
+                            <div class="flex-shrink-0 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-black text-xl group-hover:bg-orange-500 group-hover:scale-110 transition-all border-2 border-transparent group-hover:border-black">
+                                ${charLetter}
+                            </div>
+                            <span class="text-lg text-black font-bold leading-relaxed">
+                                ${opt.text}
+                            </span>
+                        </button>
+                    `;
+                });
+
+                app.innerHTML = `
+                    <div class="max-w-3xl w-full animate-fade-in">
+                        <!-- 進度條 -->
+                        <div class="mb-8 bg-white p-4 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                            <div class="text-sm text-black font-black mb-2 px-2 tracking-wide">
+                                <span>問題 ${currentQuestion + 1} / ${questions.length}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-4 border-2 border-black overflow-hidden">
+                                <div class="bg-orange-500 h-full transition-all duration-500 ease-out border-r-2 border-black" style="width: ${progressWidth}%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 題目框 -->
+                        <div class="bg-yellow-300 p-6 md:p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-8 relative">
+                            <div class="absolute -top-4 -right-4 bg-white border-4 border-black font-black px-4 py-1 transform rotate-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xl">
+                                Q${currentQuestion + 1}
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-black text-black leading-snug">
+                                ${q.title}
+                            </h2>
+                        </div>
+
+                        <!-- 選項區 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            } else if (gameState === 'result') {
+                const dish = dishesData[finalDish];
+                let tagsHtml = '';
+                dish.tags.forEach(tag => {
+                    tagsHtml += `<span class="px-4 py-1.5 bg-gray-100 border-2 border-black text-black rounded-full text-sm font-black tracking-wide shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">#${tag}</span>`;
+                });
+
+                app.innerHTML = `
+                    <div class="max-w-2xl w-full bg-white rounded-2xl border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden animate-fade-in relative mt-4">
+                        <div class="absolute -top-2 right-4 z-10 text-4xl font-black text-yellow-300 transform rotate-12 [text-shadow:_3px_3px_0_rgb(0_0_0_/_100%)]">
+                            TA-DA!!
+                        </div>
+                        <div class="${dish.coverColor} p-10 md:p-12 text-center text-white relative border-b-4 border-black">
+                            ${icons.sparkles("absolute top-6 left-6 text-white/50")}
+                            ${icons.sparkles("absolute bottom-6 right-6 text-white/50")}
+                            <div class="text-7xl mb-4 drop-shadow-[4px_4px_0_rgba(0,0,0,0.6)] hover:scale-110 transition-transform cursor-default">
+                                ${dish.icon}
+                            </div>
+                            <h2 class="text-xl md:text-2xl font-black mb-2 text-white drop-shadow-[2px_2px_0_rgba(0,0,0,0.8)]">你的靈魂命定料理是...</h2>
+                            <h1 class="text-5xl md:text-6xl font-black drop-shadow-[4px_4px_0_rgba(0,0,0,0.8)] tracking-widest mb-6">
+                                ${dish.name}
+                            </h1>
+                            <div class="inline-block bg-white text-black font-black rounded-full px-6 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                                來自漫畫：${dish.comic}
+                            </div>
+                        </div>
+                        
+                        <div class="p-8 md:p-10">
+                            <div class="flex flex-wrap gap-3 justify-center mb-6">
+                                ${tagsHtml}
+                            </div>
+                            
+                            <div class="text-center mb-6">
+                                <p class="text-black font-bold bg-yellow-300 inline-block px-4 py-1.5 border-2 border-black transform -rotate-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                    漫畫原著作者：${dish.author}
+                                </p>
+                            </div>
+                            
+                            <div class="bg-orange-50 p-6 md:p-8 rounded-xl text-gray-900 leading-relaxed text-lg mb-8 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative mt-8">
+                                <div class="absolute -top-5 left-6 bg-black text-white font-black px-4 py-1 rounded-sm transform -skew-x-12 border-2 border-black">
+                                    料理診斷
+                                </div>
+                                <span class="font-bold">${dish.description}</span>
+                            </div>
+
+                            <div class="flex justify-center">
+                                <button onclick="resetGame()" class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-black text-white text-lg font-black py-4 px-10 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+                                    ${icons.rotateCcw} 再測一次
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- 初始化啟動 ---
+        resetScores();
+        render();
+    </script>
+</body>
+</html>
