@@ -15,11 +15,11 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 font-sans text-gray-800 relative overflow-hidden"
+<body class="min-h-screen flex justify-center p-4 md:py-8 font-sans text-gray-800 relative overflow-x-hidden"
       style="background-color: #fffbeb; background-image: radial-gradient(#fcd34d 2.5px, transparent 2.5px); background-size: 24px 24px;">
 
     <!-- 遊戲主要容器 -->
-    <div id="app" class="w-full max-w-3xl flex justify-center"></div>
+    <div id="app" class="w-full max-w-3xl flex justify-center my-auto pb-10"></div>
 
     <script>
         // --- 資料庫 ---
@@ -88,65 +88,65 @@
 
         const questions = [
             {
-                title: "1. 今天的天氣與你的身體狀態，你最想來點什麼？",
+                title: "1. 現在的狀態，你最想吃點什麼？",
                 options: [
-                    { text: "有點疲憊，想吃熱騰騰、能飽足暖胃的家常菜", dishes: ["melon_pork", "fried_noodles"] },
-                    { text: "微餓嘴饞，想吃點帶有獨特香氣或Q彈嚼勁的小吃", dishes: ["meatball", "basil_pancake", "shuirunbing"] },
-                    { text: "需要提神或解渴，想來點清涼或回甘的飲品甜湯", dishes: ["oolong", "aiyu_ice"] },
-                    { text: "想要悠閒坐下來，品嚐作工細緻的下午茶或點心", dishes: ["mille_crepe", "crab_pill", "tea_egg"] }
+                    { text: "疲憊想吃熱騰騰的家常菜", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "嘴饞想吃帶有香氣或嚼勁的小吃", dishes: ["meatball", "basil_pancake", "shuirunbing"] },
+                    { text: "需要解渴提神的飲品甜湯", dishes: ["oolong", "aiyu_ice"] },
+                    { text: "想悠閒品嚐精緻下午茶", dishes: ["mille_crepe", "crab_pill", "tea_egg"] }
                 ]
             },
             {
-                title: "2. 如果這道料理背後有一個故事，你最喜歡哪一種劇情？",
+                title: "2. 料理背後的故事，喜歡哪種劇情？",
                 options: [
-                    { text: "將台灣在地特色推向國際舞台的熱血商業史", dishes: ["oolong"] },
-                    { text: "在街角老店裡，看盡聚散離合的平凡人情味", dishes: ["tea_egg", "basil_pancake"] },
-                    { text: "開著餐車環島，尋找失傳記憶的溫馨尋根之旅", dishes: ["fried_noodles", "melon_pork"] },
-                    { text: "充滿大正浪漫，邁向頂級料亭女將的青春修業", dishes: ["aiyu_ice", "crab_pill"] },
-                    { text: "在古都老屋中，藉由歷史文物與甜點重新出發", dishes: ["mille_crepe"] },
-                    { text: "熟悉的日常小吃，變成可以飼養的奇幻小動物", dishes: ["meatball", "shuirunbing"] }
+                    { text: "推向國際的熱血商業史", dishes: ["oolong"] },
+                    { text: "街角老店的平凡人情味", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "餐車環島的溫馨尋根之旅", dishes: ["fried_noodles", "melon_pork"] },
+                    { text: "大正浪漫的青春修業", dishes: ["aiyu_ice", "crab_pill"] },
+                    { text: "古都老屋的重新出發", dishes: ["mille_crepe"] },
+                    { text: "日常小吃變成奇幻寵物", dishes: ["meatball", "shuirunbing"] }
                 ]
             },
             {
-                title: "3. 你最看重食物的哪一種「口感與風味」？",
+                title: "3. 最看重哪種「口感與風味」？",
                 options: [
-                    { text: "茶葉烘焙的深邃，或是回甘解膩的清香", dishes: ["oolong", "tea_egg"] },
-                    { text: "九層塔、爆香油蔥等強烈迷人的在地台味", dishes: ["basil_pancake", "fried_noodles"] },
-                    { text: "入口即化的軟嫩，以及溫潤鹹甜的滷汁肉香", dishes: ["melon_pork", "meatball"] },
-                    { text: "一層層堆疊的細膩口感，與微甜的精緻滋味", dishes: ["mille_crepe", "crab_pill"] },
-                    { text: "Q彈有嚼勁，單純卻讓人上癮的特殊風味", dishes: ["shuirunbing", "aiyu_ice"] }
+                    { text: "回甘解膩的清香", dishes: ["oolong", "tea_egg"] },
+                    { text: "強烈迷人的在地台味", dishes: ["basil_pancake", "fried_noodles"] },
+                    { text: "溫潤鹹甜的滷汁肉香", dishes: ["melon_pork", "meatball"] },
+                    { text: "堆疊細膩的微甜滋味", dishes: ["mille_crepe", "crab_pill"] },
+                    { text: "Q彈有嚼勁的特殊風味", dishes: ["shuirunbing", "aiyu_ice"] }
                 ]
             },
             {
-                title: "4. 你最喜歡的用餐場景與氛圍是？",
+                title: "4. 最喜歡的用餐場景與氛圍？",
                 options: [
-                    { text: "精緻講究，展現主人品味的日式老屋或高級料亭", dishes: ["crab_pill", "aiyu_ice"] },
-                    { text: "穿梭在百年洋行，見證大稻埕繁華的商辦茶室", dishes: ["oolong"] },
-                    { text: "充滿時代感與文青氣息，步調緩慢的台南巷弄", dishes: ["mille_crepe"] },
-                    { text: "充滿在地活力，大家邊吃邊聊的廟口或早餐店", dishes: ["basil_pancake", "fried_noodles", "tea_egg"] },
-                    { text: "在家裡的餐桌上，吃著長輩親手做出的家常菜", dishes: ["melon_pork"] },
-                    { text: "充滿想像力的世界，身邊圍繞著超可愛的美食幻獸", dishes: ["meatball", "shuirunbing"] }
+                    { text: "講究品味的日式高級料亭", dishes: ["crab_pill", "aiyu_ice"] },
+                    { text: "見證繁華的大稻埕茶室", dishes: ["oolong"] },
+                    { text: "步調緩慢的台南文青巷弄", dishes: ["mille_crepe"] },
+                    { text: "充滿活力的廟口或早餐店", dishes: ["basil_pancake", "fried_noodles", "tea_egg"] },
+                    { text: "吃著長輩手作的家常餐桌", dishes: ["melon_pork"] },
+                    { text: "圍繞可愛美食幻獸的奇幻世界", dishes: ["meatball", "shuirunbing"] }
                 ]
             },
             {
-                title: "5. 當你遇到挫折，你覺得這道料理能怎麼治癒你？",
+                title: "5. 遇到挫折，這道料理怎麼治癒你？",
                 options: [
-                    { text: "就像這道料理，提醒我要有層次地慢慢拆解問題", dishes: ["mille_crepe", "crab_pill"] },
-                    { text: "讓我回想起家人的溫暖，充飽電後再次出發", dishes: ["melon_pork", "fried_noodles"] },
-                    { text: "在熟悉的香氣中找到安全感，發現平凡日常的美好", dishes: ["tea_egg", "basil_pancake"] },
-                    { text: "用最純粹的回甘滋味，洗滌我煩躁不安的心靈", dishes: ["oolong", "aiyu_ice"] },
-                    { text: "如果食物能變成小寵物讓我揉捏抱抱，心情就好了", dishes: ["meatball", "shuirunbing"] }
+                    { text: "提醒我有層次地拆解問題", dishes: ["mille_crepe", "crab_pill"] },
+                    { text: "回想起家人的溫暖，充飽電出發", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "在熟悉香氣中找到安全感", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "用純粹回甘洗滌煩躁心靈", dishes: ["oolong", "aiyu_ice"] },
+                    { text: "變成小寵物讓我揉捏抱抱", dishes: ["meatball", "shuirunbing"] }
                 ]
             },
             {
-                title: "6. 如果這道料理擬人化，你覺得他會是個怎樣的人？",
+                title: "6. 料理擬人化，他會是怎樣的人？",
                 options: [
-                    { text: "穿著西裝、具有國際視野與商業頭腦的行動派", dishes: ["oolong"] },
-                    { text: "穿著和服，氣質出眾且充滿青春活力的女高校生", dishes: ["aiyu_ice", "crab_pill"] },
-                    { text: "溫柔細膩，總是安靜傾聽你心事的文藝青年", dishes: ["mille_crepe"] },
-                    { text: "廚藝精湛，背後有許多故事的街坊總鋪師", dishes: ["melon_pork", "fried_noodles"] },
-                    { text: "親切和藹，總是笑眯眯看著你長大的長輩", dishes: ["tea_egg", "basil_pancake"] },
-                    { text: "滿腦子奇思妙想，隨時能變出驚喜的元氣少年/少女", dishes: ["meatball", "shuirunbing"] }
+                    { text: "具國際視野與商業頭腦的行動派", dishes: ["oolong"] },
+                    { text: "氣質出眾充滿活力的女高校生", dishes: ["aiyu_ice", "crab_pill"] },
+                    { text: "溫柔傾聽心事的文藝青年", dishes: ["mille_crepe"] },
+                    { text: "背後有許多故事的街坊總鋪師", dishes: ["melon_pork", "fried_noodles"] },
+                    { text: "笑眯眯看著你長大的長輩", dishes: ["tea_egg", "basil_pancake"] },
+                    { text: "滿腦奇思妙想的元氣少年少女", dishes: ["meatball", "shuirunbing"] }
                 ]
             }
         ];
@@ -162,11 +162,52 @@
             coffee: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg>`,
             chevronRight: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
             rotateCcw: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+            share: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>`,
             sparkles: (classes) => `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${classes}"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>`
         };
 
         function resetScores() {
             scores = { oolong: 0, tea_egg: 0, basil_pancake: 0, meatball: 0, shuirunbing: 0, fried_noodles: 0, melon_pork: 0, aiyu_ice: 0, crab_pill: 0, mille_crepe: 0 };
+        }
+
+        // --- 分享與剪貼簿功能 ---
+        window.showToast = function(msg) {
+            const toast = document.createElement('div');
+            toast.className = "fixed top-10 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full font-black border-4 border-white shadow-[0px_0px_10px_rgba(0,0,0,0.5)] z-50 animate-fade-in text-center";
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 2500);
+        }
+
+        window.copyToClipboard = function(text) {
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            window.showToast("已複製測驗結果到剪貼簿！");
+        }
+
+        window.shareResult = function() {
+            const dish = dishesData[finalDish];
+            const shareText = `我的命定台漫料理是「${dish.name}」！\n來自漫畫${dish.comic}。\n快來測測你的靈魂口味吧！\n`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: '命定台漫料理測驗',
+                    text: shareText,
+                    url: window.location.href,
+                }).catch(err => {
+                    window.copyToClipboard(shareText + window.location.href);
+                });
+            } else {
+                window.copyToClipboard(shareText + window.location.href);
+            }
         }
 
         // --- 事件處理 ---
@@ -232,7 +273,7 @@
                             透過 6 個情境問題，測出你的靈魂口味，<br/>
                             找出專屬於你的「命定料理」與它的漫畫出處吧！
                         </p>
-                        <button onclick="startGame()" class="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-xl font-black py-4 px-10 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+                        <button onclick="window.startGame()" class="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-xl font-black py-4 px-10 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
                             開始測驗 ${icons.chevronRight}
                         </button>
                     </div>
@@ -243,13 +284,9 @@
                 
                 let optionsHtml = '';
                 q.options.forEach((opt, i) => {
-                    const charLetter = String.fromCharCode(65 + i);
                     optionsHtml += `
-                        <button onclick="handleOption(${currentQuestion}, ${i})" class="text-left w-full bg-white p-5 md:p-6 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:bg-orange-50 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center gap-4 group">
-                            <div class="flex-shrink-0 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-black text-xl group-hover:bg-orange-500 group-hover:scale-110 transition-all border-2 border-transparent group-hover:border-black">
-                                ${charLetter}
-                            </div>
-                            <span class="text-lg text-black font-bold leading-relaxed">
+                        <button onclick="window.handleOption(${currentQuestion}, ${i})" class="text-center w-full bg-white p-5 md:p-6 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:bg-orange-50 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center group">
+                            <span class="text-lg text-black font-bold leading-relaxed group-hover:scale-105 transition-transform">
                                 ${opt.text}
                             </span>
                         </button>
@@ -329,9 +366,13 @@
                                 <span class="font-bold">${dish.description}</span>
                             </div>
 
-                            <div class="flex justify-center">
-                                <button onclick="resetGame()" class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-black text-white text-lg font-black py-4 px-10 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+                            <!-- 確保這兩個按鈕存在且能運作 -->
+                            <div class="flex flex-col md:flex-row justify-center gap-4">
+                                <button onclick="window.resetGame()" class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-black text-white text-lg font-black py-4 px-8 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] w-full md:w-auto">
                                     ${icons.rotateCcw} 再測一次
+                                </button>
+                                <button onclick="window.shareResult()" class="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-lg font-black py-4 px-8 rounded-xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] w-full md:w-auto">
+                                    ${icons.share} 分享結果
                                 </button>
                             </div>
                         </div>
